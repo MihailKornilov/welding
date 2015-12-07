@@ -1,0 +1,67 @@
+/* список заявок */
+#zayav .clear{float:right}
+#zayav #spisok{
+	padding-bottom:10px;
+	background-color:#f7f7f7;
+	vertical-align:top;
+}
+#zayav .right{width:155px;border:0;padding-bottom:300px;padding-left:0}
+#zayav ._next{margin:6px 8px 0}
+#zayav ._empty{margin:10px 10px 0}
+
+.zayav_unit{
+	cursor:pointer;
+	margin:10px 10px 0;
+	border:#ccc solid 1px;
+	border-radius:2px;
+	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+.zayav_unit:hover{border:#bbb solid 1px;box-shadow: 0 0 5px rgba(0,0,0,0.4);}
+.zayav_unit .name{
+	display:block;
+	font-weight:bold;
+	margin:4px 0 2px 6px;
+	font-size:12px;
+}
+.zayav_unit H2{float:right;font-size:10px;color:#777;margin:4px}
+.zayav_unit H2.finded{background:#FFC;color:#444;text-decoration:underline}
+.zayav_unit .utab{width:100%;border-spacing:2px;margin-bottom:4px}
+.zayav_unit .label{width:90px;padding-left:10px}
+.zayav_unit .date-ready{margin-left:20px;color:#090}
+.zayav_unit .balans{float:right;margin-right:2px;color:#777}
+.zayav_unit .acc{color:#07a;cursor:default;font-size:10px}
+.zayav_unit .opl{color:#090;cursor:default;font-size:10px}
+
+
+/* внесение новой заявки */
+#zayav-add-tab{border-spacing:8px}
+#zayav-add-tab .label{width:170px;text-align:right}
+#zayav-add-tab #name,
+#zayav-add-tab #about,
+#zayav-add-tab #adres{width:252px}
+#zayav-add-tab #count{width:40px}
+
+
+
+
+/* Цветная кнопка статуса заявки  */
+#zayav-status-button h1 {
+	display:inline-block;
+	border:#DDD solid 1px;
+	width:140px;
+	text-align:center;
+	padding:2px 0 3px 0;
+	color:#666;
+	cursor:pointer;
+}
+#zayav-status-button h1:hover{border-color:#bbd; color:#444}
+#zayav-status-button span{color:#aaa;font-size:10px;margin-left:10px}
+
+
+
+/* информация о заявке */
+#zayav-info .page{margin:10px}
+#zayav-info .headName{margin:10px 0}
+#zayav-info .headName ._dropdown{float:right;margin-right:115px}
+#zayav-info #tab{border-spacing:8px}
+#zayav-info .label{width:70px}
