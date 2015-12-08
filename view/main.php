@@ -10,34 +10,6 @@ function _appScripts() {
 
 
 
-function zayavStatus($id=false, $i='name') {
-	$name = array(
-		0 => 'Любой статус',
-		1 => 'Ожидает выполнения',
-		2 => 'Выполнено',
-		3 => 'Завершить не удалось'
-	);
-	$color = array(
-		0 => 'ffffff',
-		1 => 'E8E8FF',
-		2 => 'CCFFCC',
-		3 => 'FFDDDD'
-	);
-
-	if($id === false)
-		return $name;
-
-	//неизвестный id статуса
-	if(!isset($name[$id]))
-		return '<span class="red">неизвестный id статуса: <b>'.$id.'</b></span>';
-
-	switch($i) {
-		case 'name': return $name[$id];
-		case 'color': return $color[$id];
-		case 'bg': return ' style="background-color:#'.$color[$id].'"';
-		default: return '<span class="red">неизвестный ключ статуса: <b>'.$i.'</b></span>';
-	}
-}//_zayavStatus()
 function _zayavValToList($arr) {//вставка данных заявок в массив по zayav_id
 	$ids = array();
 	$arrIds = array();
@@ -72,7 +44,7 @@ function _zayavValToList($arr) {//вставка данных заявок в массив по zayav_id
 						'<div class="tooltip">'._zayavTooltip($r, $arr[$id]).'</div>'.
 					'</a>',
 				'zayav_color' => //подсветка заявки на основании статуса
-					'<a href="'.URL.'&p=zayav&d=info&id='.$r['id'].'" class="zayav_link color"'.zayavStatus($r['status'], 'bg').'>'.
+					'<a href="'.URL.'&p=zayav&d=info&id='.$r['id'].'" class="zayav_link color"'._zayavStatus($r['status'], 'bg').'>'.
 						'№'.$r['nomer'].
 						'<div class="tooltip">'._zayavTooltip($r, $arr[$id]).'</div>'.
 					'</a>',
@@ -88,9 +60,10 @@ function _zayavTooltip($z, $v) {
 		'<table>'.
 			'<tr><td>'.
 				'<td class="inf">'.
-					'<div'.zayavStatus($z['status'], 'bg').'>'.
-						'class="tstat'._tooltip('Статус заявки: '.zayavStatus($z['status']), -7, 'l').
+					'<div'._zayavStatus($z['status'], 'bg').
+						' class="tstat'._tooltip('Статус заявки: '._zayavStatus($z['status']), -7, 'l').
 					'</div>'.
+					'<b>'.$z['name'].'</b>'.
 			'<table>'.
 				'<tr><td class="label top">Клиент:'.
 					'<td>'.$v['client_name'].
@@ -119,7 +92,7 @@ function zayav($v) {
 					_check('desc', 'Обратный порядок', $v['desc']).
 					'<div class="condLost'.(!empty($v['find']) ? ' hide' : '').'">'.
 						'<div class="findHead">Статус заявки</div>'.
-						_rightLink('status', zayavStatus(), $v['status']).
+						_rightLink('status', _zayavStatus(), $v['status']).
 					'</div>'.
 		'</table>'.
 	'</div>';
@@ -242,7 +215,7 @@ function zayav_spisok($v) {
 	foreach($zayav as $id => $r) {
 		$diff = round($r['accrual_sum'] - $r['income_sum'], 2);
 		$send['spisok'] .=
-			'<div class="zayav_unit" id="u'.$id.'"'.zayavStatus($r['status'], 'bg').'" val="'.$id.'">'.
+			'<div class="zayav_unit" id="u'.$id.'"'._zayavStatus($r['status'], 'bg').'" val="'.$id.'">'.
 				'<h2'.(isset($r['nomer_find']) ? ' class="finded"' : '').'>#'.$r['nomer'].'</h2>'.
 				'<a class="name">'.$r['name'].'</a>'.
 				'<table class="utab">'.
@@ -269,15 +242,6 @@ function zayav_spisok($v) {
 }//zayav_spisok()
 
 
-function zayavStatusButton($z, $class='status') {
-	return
-		'<div id="zayav-status-button">'.
-			'<h1'.zayavStatus($z['status'], 'bg').' class="'.$class.'">'.
-				zayavStatus($z['status']).
-			'</h1>'.
-			'<span>от '.FullDataTime($z['status_dtime'], 1).'</span>'.
-		'</div>';
-}//zayavStatusButton()
 function zayav_info() {
 	if(!$zayav_id = _num(@$_GET['id']))
 		return _err('Страницы не существует');
@@ -290,6 +254,10 @@ function zayav_info() {
 	if(!$z = query_assoc($sql))
 		return _err('Заявки не существует.');
 
+	$z['pre_cost'] = _cena($z['pre_cost']);
+
+	$status = _zayavStatus();
+	unset($status[0]);
 	$history = _history(array('zayav_id'=>$zayav_id));
 
 	return
@@ -300,7 +268,13 @@ function zayav_info() {
 				'head:"№<b>'.$z['nomer'].'</b>",'.
 				'client_id:'.$z['client_id'].','.
 				'client_link:"'.addslashes(_clientVal($z['client_id'], 'link')).'",'.
-				'status:'.$z['status'].
+				'status:'.$z['status'].','.
+				'status_sel:'._selJson($status).','.
+				'name:"'.addslashes($z['name']).'",'.
+				'about:"'.addslashes($z['about']).'",'.
+				'count:'.$z['count'].','.
+				'adres:"'.addslashes($z['adres']).'",'.
+				'pre_cost:'.$z['pre_cost'].
 			'};'.
 	'</script>'.
 
@@ -324,9 +298,10 @@ function zayav_info() {
 				'<tr><td class="label">Описание:<td>'.$z['about'].
 				'<tr><td class="label">Количество:<td><b>'.$z['count'].'</b> шт.'.
  ($z['adres'] ? '<tr><td class="label">Адрес:<td>'.$z['adres'] : '').
+ ($z['pre_cost'] ? '<tr><td class="label">Стоимость:<td><b>'.$z['pre_cost'].'</b> руб.' : '').
 				'<tr><td class="label">Дата приёма:'.
 					'<td class="dtime_add'._tooltip('Заявку '.(_viewerAdded($z['viewer_id_add'])), -70).FullDataTime($z['dtime_add']).
-				'<tr><td class="label">Статус:<td>'.zayavStatusButton($z).
+				'<tr><td class="label">Статус:<td>'._zayavStatusButton($z).
 			'</table>'.
 
 			_zayavInfoAccrual($zayav_id).

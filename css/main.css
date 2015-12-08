@@ -6,6 +6,7 @@
 	vertical-align:top;
 }
 #zayav .right{width:155px;border:0;padding-bottom:300px;padding-left:0}
+#zayav #find{margin-top:15px}
 #zayav ._next{margin:6px 8px 0}
 #zayav ._empty{margin:10px 10px 0}
 
@@ -44,20 +45,6 @@
 
 
 
-/* Цветная кнопка статуса заявки  */
-#zayav-status-button h1 {
-	display:inline-block;
-	border:#DDD solid 1px;
-	width:140px;
-	text-align:center;
-	padding:2px 0 3px 0;
-	color:#666;
-	cursor:pointer;
-}
-#zayav-status-button h1:hover{border-color:#bbd; color:#444}
-#zayav-status-button span{color:#aaa;font-size:10px;margin-left:10px}
-
-
 
 /* информация о заявке */
 #zayav-info .page{margin:10px}
@@ -65,3 +52,23 @@
 #zayav-info .headName ._dropdown{float:right;margin-right:115px}
 #zayav-info #tab{border-spacing:8px}
 #zayav-info .label{width:70px}
+
+
+
+/* изменение статуса заявки */
+#zayav-status{margin:10px}
+#zayav-status .st{
+	padding:10px 15px;
+	font-size:13px;
+	font-weight:bold;
+	border:#ddd solid 1px;
+	color:#357;
+	cursor:pointer;
+	margin-bottom:10px;
+}
+#zayav-status .st:hover{border-color:#BBD}
+#zayav-status .c1{background-color:#E8E8FF}
+#zayav-status .c2{background-color:#CFC}
+#zayav-status .c3{background-color:#FDD}
+#zayav-status .about{color:#777;margin-top:3px}
+#zayav-status #zs-tab{border-spacing:8px;display:none}
